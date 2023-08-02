@@ -1,16 +1,17 @@
 <script>
+  import {onMount} from "svelte";
   let imageUrl;
   let isError;
-  const getNewDog = () => {
-    fetch("https://dog.ceo/api/breeds/image/random")
-      .then((response) => response.json())
-      .then((data) => {
-        imageUrl = data.message;
-      }).catch(error => {
-        isError = true;
-      })
+  const getNewDog = async () => {
+    try {
+      const response = await fetch("https://dog.ceo/api/breeds/image/random")
+      const data = await response.json();
+      imageUrl = data.message;
+    } catch (error) {
+      isError = true;
+    }
   }
-  getNewDog();
+  onMount(getNewDog)
 </script>
 
 <header>
