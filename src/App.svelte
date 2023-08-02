@@ -1,8 +1,16 @@
 <script>
-  let promise = fetch("https://dog.ceo/api/breeds/image/random")
-  const getNewDogImage = () => {
-    promise = fetch("https://dog.ceo/api/breeds/image/random")
+  let imageUrl;
+  let isError;
+  const getNewDog = () => {
+    fetch("https://dog.ceo/api/breeds/image/random")
+      .then((response) => response.json())
+      .then((data) => {
+        imageUrl = data.message;
+      }).catch(error => {
+        isError = true;
+      })
   }
+  getNewDog();
 </script>
 
 <header>
@@ -10,20 +18,15 @@
 </header>
 <main>
 <div>
-<button on:click={getNewDogImage}>Get different dog</button>
-  <h2>Look at this cute dog</h2>
-  {#await promise}
-    <p>Fetching...</p>
-  {:then response}
-    {#await response.json()}
-      {:then data}
-      <img src={data.message} alt="Dog's image">
-      {:catch error}
-      <p>Failed to fetch, error occured</p>
-    {/await}
-  {:catch error}
-    <p>Failed to fetch, error occured</p>
-  {/await}
+<button on:click={getNewDog}>Get different dog</button>
+<h2>Look at this cute dog</h2>
+{#if imageUrl === undefined}
+  <p>Fetching...</p>
+{:else if isError}
+  <p>Some error occured, try again!</p>
+{:else}
+  <img src={imageUrl} alt="Dog's image">
+{/if}
 </div>
 </main>
 
@@ -34,3 +37,4 @@ img {
   border-radius: 4px;
 }
 </style>
+
